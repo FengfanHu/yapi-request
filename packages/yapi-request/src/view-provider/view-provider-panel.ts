@@ -1,14 +1,14 @@
 import { ExtensionContext, WebviewView, WebviewViewProvider } from "vscode";
 import { AbstractViewProvider } from "./view-provider-abstract";
 
-export class ViewProviderSidebar
+export class ViewProviderPanel
   extends AbstractViewProvider
   implements WebviewViewProvider
 {
   constructor(context: ExtensionContext) {
     super(context, {
       distDir: "out/webview",
-      indexPath: "out/webview/src/pages/sidebar/index.html",
+      indexPath: "out/webview/src/pages/panel/index.html",
     });
   }
 

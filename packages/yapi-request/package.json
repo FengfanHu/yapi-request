@@ -13,6 +13,11 @@
   "main": "./out/yapi-request/extension.js",
   "commands": [
     {
+      "command": "yapi-request.showConfiguration",
+      "title": "展示 Yapi Request 配置",
+      "category": "Hello"
+    },
+    {
       "command": "yapi-request.helloWorld",
       "title": "Hello World"
     }

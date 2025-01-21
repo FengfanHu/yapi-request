@@ -15,11 +15,6 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"options": {
-				"env": {
-					"PATH": "~/.nvm/versions/node/v18.20.4/bin:${env:PATH}"
-				}
-			}
 		}
 	]
 }
