@@ -1,0 +1,62 @@
+{
+  "name": "yapi-request",
+  "displayName": "yapi-request",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/yapi-request/extension.js",
+  "commands": [
+    {
+      "command": "yapi-request.helloWorld",
+      "title": "Hello World"
+    }
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "yapi-request",
+          "title": "yapi-request",
+          "icon": "assets/yapi.svg"
+        }
+      ]
+    },
+    "views": {
+      "yapi-request": [
+        {
+          "id": "sidebar-view",
+          "name": "yapi-request",
+          "type": "webview"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.96.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.16.0",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "html-modifier": "^1.2.0"
+  }
+}
