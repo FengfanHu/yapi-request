@@ -15,7 +15,7 @@
 			"outFiles": [
 				"${workspaceFolder}/packages/yapi-request/out/**/*.js"
 			],
-			"preLaunchTask": "${defaultBuildTask}",
+			"preLaunchTask": "npm: dev:extension",
 		}
 	]
 }

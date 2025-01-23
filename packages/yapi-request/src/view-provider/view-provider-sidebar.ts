@@ -1,10 +1,10 @@
-import { ExtensionContext, WebviewView, WebviewViewProvider } from "vscode";
+import { ExtensionContext, WebviewView } from "vscode";
 import { AbstractViewProvider } from "./view-provider-abstract";
+import { Dove } from "shared";
 
-export class ViewProviderSidebar
-  extends AbstractViewProvider
-  implements WebviewViewProvider
-{
+export class ViewProviderSidebar extends AbstractViewProvider {
+  dove?: Dove;
+
   constructor(context: ExtensionContext) {
     super(context, {
       distDir: "out/webview",
@@ -19,5 +19,15 @@ export class ViewProviderSidebar
       localResourceRoots: [this.context.extensionUri],
     };
     webview.html = await this.getWebviewHtml(webview);
+
+    const dove = new Dove((data: unknown) => webviewView.webview.postMessage);
+    webviewView.webview.onDidReceiveMessage(dove.receiveMessage);
+    this.dove = dove;
+    webviewView.onDidDispose(() => this.onUnMount?.());
+    this.onMount?.();
   }
+
+  onUnMount() {}
+
+  onMount() {}
 }

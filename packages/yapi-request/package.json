@@ -44,13 +44,16 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "rollup -c",
+    "watch": "rollup -c --watch",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-typescript": "^12.1.2",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.96.0",
@@ -59,9 +62,13 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.16.0",
+    "rollup": "^4.31.0",
+    "tslib": "^2.8.1",
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "html-modifier": "^1.2.0"
+    "debug": "^4.4.0",
+    "html-modifier": "^1.2.0",
+    "shared": "workspace:*"
   }
 }
