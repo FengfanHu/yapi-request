@@ -27,10 +27,10 @@ export default class Dove {
     this.sender = sender;
   }
 
-  sendMessage<T = any>(
+  sendMessage = <T = any>(
     msgType: Msg["data"]["msgType"],
     data?: Msg["data"]["data"]
-  ): Promise<T> {
+  ): Promise<T> => {
     return new Promise((resolve) => {
       const key = uuid();
       //注册消息，等待反馈
@@ -45,11 +45,12 @@ export default class Dove {
         },
       });
     });
-  }
+  };
 
-  async receiveMessage(message: Msg) {
+  receiveMessage = async (message: Msg) => {
     if (message.type === MsgType.INITIATIVE) {
-      const keyPool = this.subscribePool.get(message.data.msgType) || new Set();
+      const keyPool =
+        this.subscribePool?.get?.(message.data.msgType) || new Set();
       const gather: any[] = [];
       keyPool.forEach((key) => {
         const callback = this.subscribeMapCallback.get(key);
@@ -73,10 +74,10 @@ export default class Dove {
       const resolve = this.messagePool.get(message.key);
       resolve?.(message.data.data);
     }
-  }
+  };
 
   // 订阅消息
-  subscribe(msgType: any, callback: (data: any) => void): symbol {
+  subscribe = (msgType: any, callback: (data: any) => void): symbol => {
     const pool = this.subscribePool.get(msgType) || new Set();
     const key = Symbol();
     pool.add(key);
@@ -84,26 +85,26 @@ export default class Dove {
     this.subscribePool.set(msgType, pool);
     this.subscribeMapCallback.set(key, callback);
     return key;
-  }
+  };
 
   // 取消订阅
-  unSubscribe(key: symbol) {
+  unSubscribe = (key: symbol) => {
     this.subscribeMapCallback.delete(key);
-  }
+  };
 
   // 垃圾回收
-  private gc(msgType: any, key: symbol) {
+  private gc = (msgType: any, key: symbol) => {
     setTimeout(() => {
       const pool = this.subscribePool.get(msgType) || new Set();
       pool.delete(key);
     });
-  }
+  };
 
   //清除所有
-  clearAll() {
+  clearAll = () => {
     this.sender = null;
     this.messagePool = new Map();
     this.subscribePool = new Map();
     this.subscribeMapCallback = new Map();
-  }
+  };
 }

@@ -1,5 +1,6 @@
 import {
   ExtensionContext,
+  ExtensionMode,
   Uri,
   Webview,
   WebviewPanel,
@@ -13,6 +14,16 @@ export type ViewProviderOptions = {
   distDir: string;
   indexPath: string;
 };
+
+export function getNonce() {
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 32; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
 
 export abstract class AbstractViewProvider {
   // 这个是在前端应用插入代码的标识，用于在 index.html 文件适应的位置插入内容
@@ -39,18 +50,57 @@ export abstract class AbstractViewProvider {
    * @returns 处理好的 index.html 文本内容
    */
   protected async getWebviewHtml(webview: Webview) {
+    const isProd = this.context.extensionMode === ExtensionMode.Production;
+
+    // See https://github.com/jallen-dev/vscode-react-starter for hmr.
+    if (!isProd) {
+      const localPort = "5173";
+      const localServerUrl = `localhost:${localPort}`;
+      const scriptUri = `http://${localServerUrl}/src/pages/sidebar/main.tsx`;
+
+      const reactRefresh = /*html*/ `
+      <script type="module">
+        import RefreshRuntime from "http://localhost:5173/@react-refresh"
+        RefreshRuntime.injectIntoGlobalHook(window)
+        window.$RefreshReg$ = () => {}
+        window.$RefreshSig$ = () => (type) => type
+        window.__vite_plugin_react_preamble_installed__ = true
+      </script>`;
+
+      const reactRefreshHash =
+        "sha256-YmMpkm5ow6h+lfI3ZRp0uys+EUCt6FOyLkJERkfVnTY=";
+
+      const csp = [
+        `default-src 'none';`,
+        `script-src 'unsafe-eval' https://* ${`http://${localServerUrl} http://0.0.0.0:${localPort} '${reactRefreshHash}'`}`,
+        `style-src ${webview.cspSource} 'self' 'unsafe-inline' https://*`,
+        `font-src ${webview.cspSource}`,
+        `connect-src https://* ${`ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
+      ];
+
+      return `<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Security-Policy" content="${csp.join("; ")}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>VSCode React Starter</title>
+      </head>
+      <body>
+        <div id="root"></div>
+        ${isProd ? "" : reactRefresh}
+        <script type="module" src="${scriptUri}"></script>
+      </body>
+    </html>`;
+    }
+
     const { distDir, indexPath } = this.viewProviderOptions;
-    // 前端应用的打包结果所在的目录
     const webviewUri = webview
       .asWebviewUri(Uri.joinPath(this.context.extensionUri, distDir))
       .toString();
-    // 需要在前端应用中插入的脚本，目的是：将上述 webviewUri 所指的目录告知前端应用，前端应用在定位资源时需要
-    const injectInContent = `<script> window.${AbstractViewProvider.WEBVIEW_INJECT_IN_MARK} = "${webviewUri}"</script>`;
 
     const htmlPath = join(this.context.extensionPath, indexPath);
-    // 读取 index.html 文件内容
     const htmlText = readFileSync(htmlPath).toString();
-    // 使用 html-modifier 库来处理读取的内容，主要的作用是：1、将 script、link 标签中的 src、href 的值，重新赋予正确的值，2、将上述 injectInContent 的内容插入读取的内容中
     return await modifyHtml(htmlText, {
       onopentag(name, attribs) {
         if (name === "script") {
@@ -60,15 +110,6 @@ export abstract class AbstractViewProvider {
           attribs.href = join(webviewUri, attribs.href);
         }
         return { name, attribs };
-      },
-      oncomment(data) {
-        const hasMark = data
-          ?.toString()
-          .toLowerCase()
-          .includes(AbstractViewProvider.WEBVIEW_INJECT_IN_MARK);
-        return hasMark
-          ? { data: injectInContent, clearComment: true }
-          : { data };
       },
     });
   }

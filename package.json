@@ -6,6 +6,7 @@
   "scripts": {
     "dev:extension": "pnpm run -F yapi-request watch",
     "dev:webview": "pnpm run -F webview watch",
+    "dev:shared": "pnpm run -F shared watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

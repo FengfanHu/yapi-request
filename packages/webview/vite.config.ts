@@ -14,7 +14,10 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-  // server: {
-  //   host: "0.0.0.0",
-  // },
+  server: {
+    hmr: {
+      host: "localhost",
+      protocol: "ws",
+    },
+  },
 });

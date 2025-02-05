@@ -54,6 +54,7 @@
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.96.0",
@@ -68,6 +69,7 @@
   },
   "dependencies": {
     "debug": "^4.4.0",
+    "fs-extra": "^11.3.0",
     "html-modifier": "^1.2.0",
     "shared": "workspace:*"
   }
