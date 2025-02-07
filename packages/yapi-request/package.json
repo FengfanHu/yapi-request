@@ -46,8 +46,7 @@
     "vscode:prepublish": "pnpm run compile",
     "compile": "rollup -c",
     "watch": "rollup -c --watch",
-    "pretest": "pnpm run compile && pnpm run lint",
-    "lint": "eslint src",
+    "pretest": "pnpm run compile",
     "test": "vscode-test"
   },
   "devDependencies": {
@@ -58,11 +57,8 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.96.0",
-    "@typescript-eslint/eslint-plugin": "^8.17.0",
-    "@typescript-eslint/parser": "^8.17.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
-    "eslint": "^9.16.0",
     "rollup": "^4.31.0",
     "tslib": "^2.8.1",
     "typescript": "^5.7.2"

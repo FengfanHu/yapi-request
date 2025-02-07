@@ -1,4 +1,4 @@
-import { Uri, workspace, commands, WorkspaceFolder, window } from "vscode";
+import { Uri, workspace, WorkspaceFolder } from "vscode";
 import * as path from "path";
 import * as fs from "fs-extra";
 import { CONFIG_FILE_NAME, CONFIG_FILE_NAME_JS } from "./consts";
